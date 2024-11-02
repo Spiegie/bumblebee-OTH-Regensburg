@@ -241,48 +241,6 @@ function state_to_color($state) {
             <div class="col-md-4">
 			<h4>Status: </h4>
             <?php 
-            // make Status editable for supervisors
-            $sql = "SELECT userid FROM new_supervisors WHERE userid = '".$user_arr['id']."' AND instrumentid = '".$instrumentid."' ;";
-            $supervisors_arr = mysqli_query($db, $sql);
-            $supervisors = mysqli_fetch_assoc($supervisors_arr);
-            
-            $sql = "SELECT i.status, i.id, i.state
-                    FROM new_instruments i
-                    WHERE i.id='".$instrumentid."';";
-            $res_arr = mysqli_query($db, $sql);
-            $res = mysqli_fetch_assoc($res_arr);
-            if ($supervisors['userid'] == $user_arr['id']) {
-                echo "<form action='instruments.php?instname=".$instname."' method='post'>
-                    <table class='table table-bordered '>
-                        <tr>
-                        <td>
-                            <textarea name='statustext'>".$res['status']."</textarea>
-                        </td>
-						<td>
-							<select name='stateselect' class='form-control' style='font-weight:bold'>
-								<option ".get_selected_state($res['state'], 0)." value='0' class='text-default' style='font-weight:bold'>Default</option>
-								<option ".get_selected_state($res['state'], 1)." value='1' class='text-success' style='font-weight:bold'>OK</option>
-								<option ".get_selected_state($res['state'], 2)." value='2' class='text-warning' style='font-weight:bold'>Danger</option>
-								<option ".get_selected_state($res['state'], 3)." value='3' class='text-danger' style='font-weight:bold'>Error</option>
-							</select> 
-                            <input type='hidden' name='hID' value='".$res['id']."'>
-                            <input type='submit' name='bStatus' value='Status ändern' class='btn btn-default'>
-                        </td>
-                        </tr>
-                    </table>
-                    </form>";
-            } else {
-                // print status from instrument
-                if ($res['status'] != ''){
-					echo "<p style='border-style: double'>
-						<span style='font-weight:bold' class=".state_to_color($res['state']).">
-						".nl2br($res['status'])."
-						</span>
-						</p>";
-                } else {
-                    echo "<p style='border-style: double'> kein Status </p>";
-                }
-            }                
             
 
             ?>
