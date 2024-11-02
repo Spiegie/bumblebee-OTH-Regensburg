@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -22,7 +20,7 @@ if(!empty($_POST)) {
 	}
 	
 	
-	while(list($name,$value)=each($_POST)){
+    foreach($_POST as $name => $value) {
 		$$name=htmlspecialchars($value);
 	}
 	$startTime = $startTime.":00";

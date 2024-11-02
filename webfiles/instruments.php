@@ -1,9 +1,6 @@
-
-<!-- Hier weitermachen -->
 <?php
 session_start();
 $userid=$_SESSION['userid'];
-
 if(!isset($userid)){
 	// falls Benutzer noch nicht angemeldet ist, wird er auf die Loginseite geleitet.
 	header("Location: login.php");
@@ -16,31 +13,64 @@ if(!isset($userid)){
 	$user_arr=mysqli_fetch_assoc($resultname);
 	$username=$user_arr['name'];
 }
-$instrumentname = $_GET['instname'];
-$sql = "SELECT id FROM new_instruments WHERE name='".$instrumentname."';";
-if (!$res_instname_id = mysqli_query($db, $sql)) {
-	$errormsg = "Instrument wurde nicht gefunden";
-	echo "<p>".$errormsg."</p>";
+
+if ($_POST['bStatus'] != '') {
+	$text = htmlspecialchars($_POST['statustext']);
+	$stateselect = htmlspecialchars($_POST['stateselect']);
+    $sql = "UPDATE new_instruments 
+			SET status = '".$text."',
+				state = '".$stateselect."'
+            WHERE id ='".$_POST['hID']."';";
+    mysqli_query($db, $sql);
 }
-$res_instrumentid= mysqli_fetch_assoc($res_instname_id);
-$instrumentid = $res_instrumentid['id'];
-// Abfrage ob user zugriffsrechte auf die Seite hat
-$sql = "SELECT p.userid userid FROM new_permissions p INNER JOIN new_instruments i ON p.instrumentid=i.id WHERE i.name= '".$instrumentname."'";
-if (!$res_permission_arr = mysqli_query($db, $sql)) {
-	echo "<p> error".$errormsg."</p>";
-}
-$isPermitted = 0 ;
-while($res_permission = mysqli_fetch_assoc($res_permission_arr)) {
-	if ($res_permission['userid'] == $user_arr['id']) {
-		$isPermitted = True;
-		break ;
+
+
+function int_to_tag ($day) {
+	switch($day) {
+	case "0":
+		return "So";
+		break;
+	case "1":
+		return "Mo";
+		break;
+	case "2":
+		return "Di";
+		break;
+	case "3":
+		return "Mi";
+		break;
+	case "4":
+		return "Do";
+		break;
+	case "5":
+		return "Fr";
+		break;
+	case "6":
+		return "Sa";
+		break;
 	}
 }
-if ($isPermitted or $user_arr['isAdmin'] == '1') {
-	
-} else {
-	echo "Sie haben keine Berechtigung dieses instrument zu Buchen";
-	header("Location: welcome_bumble.php?errormsg=nopermission");
+function get_selected_state($dbvar, $number) {
+	if ($dbvar == $number) {
+		return "selected";
+	}
+}
+
+function state_to_color($state) {
+	switch($state) {
+	case "0":
+		return "text-info";
+		break;
+	case "1":
+		return "text-success";
+		break;
+	case "2":
+		return "text-warning";
+		break;
+	case "3";
+		return "text-danger";
+		break;
+	}
 }
 
 
@@ -59,8 +89,7 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 			<div class="pull-left" style="padding:5px">Sie sind eingeloggt als <span style='color:green'><?php echo $username ?></span> </br>
 				<ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
-                    <li class="breadcrumb-item"><a href="instruments.php?instname=<?php echo $_GET['instname'];?>">Instrumentübersicht <?php echo $_GET['instname'];?></a></li>
-                    <li class="breadcrumb-item active">Buchung für <?php echo $_GET['instname'];?></li>
+                    <li class="breadcrumb-item active"><?php echo $_GET['instname'];?></li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
@@ -71,61 +100,7 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
 <!-- -->
-		<?php echo "<h1 class='page-header'> Buchung für ".$instrumentname." </h1>"; ?>
-		<?php 
-		
-			if ($_GET['errormsg'] == 'inputerror') {
-				echo "
-				<hr>
-				<div class='text-danger'>Fehler bei der Eingabe</div>
-				";
-			}
-			
-			if ($_GET['errormsg'] == 'dataerror') {
-				echo "
-				<hr>
-				<div class='text-danger'>Sie haben einen fehler bei der Eingabe gemacht</div>
-				";
-			}
-			
-			if ($_GET['errormsg'] == 'isalreadybooked') {
-				echo "
-				<hr>
-				<div class='text-danger'>Instrument ist um diese Zeit bereits gebucht</div>
-				";
-			}
-			if ($_GET['booked'] != '') {
-				echo "<div class='text-success'>Buchung erfolgreich</div>";
-			}
-		
-			mysqli_data_seek($res_permission_arr,0); 
-		?>
-		<form action='processnew_Booking.php?instname=<?php echo $_GET['instname'];?>' method='post'>
-			<table class="table table-bordered table-striped">
-			<tr>
-				<td> <span> Datum: </span> </td>
-				<td> <input type='date' name='date' class="form-control"> </td>
-			</tr>
-			<tr>
-				<td> <span> Start (Zeit): </span> </td>
-				<td> <input type='time' name='startTime' class="form-control"> </td>
-			</tr>
-			<tr>
-				<td> <span> Ende (Zeit): </span> </td>
-				<td> <input type='time' name='endTime' class="form-control"> </td>
-			</tr>
-			<tr>
-				<td> <span> Kommentar : </span> </td>
-				<td> <input type='text'  name='comment' class="form-control" > </td>
-			</tr>
-			<input type='hidden' name='instrumentname' value='<?php echo $instrumentname;?>'>
-			<input type='hidden' name='instrumentid' value='<?php echo $instrumentid;?>'>
-			<input type='hidden' name='bookedby' value=''>
-			
-			</table>
-			<input type='submit' class='btn btn-block btn-success' value='OK' name='button'>
-		</form>
-		<?php
+			<?php
 			// read $_GET and get stuff
 			$instname = htmlspecialchars($_GET['instname']);
 			$sql = "SELECT id FROM new_instruments WHERE name='".$instname."';";
@@ -136,6 +111,8 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 			$res_instrumentid= mysqli_fetch_assoc($res_instname_id);
 			$instrumentid = $res_instrumentid['id'];
 			
+			// make headline
+			echo "<h1 class='page-header'> Instrumentübersicht ".$instname." </h1>";
 			//print errormsg to user
 			
 			
@@ -241,15 +218,17 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 					echo "<p>".$errormsg."</p>";
 				}
 			}
-			
+
 			
 ?>
-
+			<p class="">
+            
+			</p>
 			<div class="col-md-4">
+            <h4>Zeitraum filtern:</h4>
 			<table class="table">
-			<tr><td>Zeitraum filtern</td></tr>
 			<tr>
-			<?php echo "<form action='newBooking.php?instname=".$instname."' method='post'>"; ?>
+			<?php echo "<form action='instruments.php?instname=".$instname."' method='post'>"; ?>
 			<td>von: <input class='form-control' type='date' name='dvon' value='<?php echo $_POST['dvon']; ?>'></td>
 			<td>bis: <input class='form-control' type='date' name='dbis' value='<?php echo $_POST['dbis']; ?>'></td>
 			<td> <input class='btn btn-default' type='submit' value='filtern' name='bfiltern'> </td>
@@ -257,7 +236,58 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 			</tr>
 			</table>
 			</div>
+            <div class="col-md-4">
+            </div>
+            <div class="col-md-4">
+			<h4>Status: </h4>
+            <?php 
+            // make Status editable for supervisors
+            $sql = "SELECT userid FROM new_supervisors WHERE userid = '".$user_arr['id']."' AND instrumentid = '".$instrumentid."' ;";
+            $supervisors_arr = mysqli_query($db, $sql);
+            $supervisors = mysqli_fetch_assoc($supervisors_arr);
+            
+            $sql = "SELECT i.status, i.id, i.state
+                    FROM new_instruments i
+                    WHERE i.id='".$instrumentid."';";
+            $res_arr = mysqli_query($db, $sql);
+            $res = mysqli_fetch_assoc($res_arr);
+            if ($supervisors['userid'] == $user_arr['id']) {
+                echo "<form action='instruments.php?instname=".$instname."' method='post'>
+                    <table class='table table-bordered '>
+                        <tr>
+                        <td>
+                            <textarea name='statustext'>".$res['status']."</textarea>
+                        </td>
+						<td>
+							<select name='stateselect' class='form-control' style='font-weight:bold'>
+								<option ".get_selected_state($res['state'], 0)." value='0' class='text-default' style='font-weight:bold'>Default</option>
+								<option ".get_selected_state($res['state'], 1)." value='1' class='text-success' style='font-weight:bold'>OK</option>
+								<option ".get_selected_state($res['state'], 2)." value='2' class='text-warning' style='font-weight:bold'>Danger</option>
+								<option ".get_selected_state($res['state'], 3)." value='3' class='text-danger' style='font-weight:bold'>Error</option>
+							</select> 
+                            <input type='hidden' name='hID' value='".$res['id']."'>
+                            <input type='submit' name='bStatus' value='Status ändern' class='btn btn-default'>
+                        </td>
+                        </tr>
+                    </table>
+                    </form>";
+            } else {
+                // print status from instrument
+                if ($res['status'] != ''){
+					echo "<p style='border-style: double'>
+						<span style='font-weight:bold' class=".state_to_color($res['state']).">
+						".nl2br($res['status'])."
+						</span>
+						</p>";
+                } else {
+                    echo "<p style='border-style: double'> kein Status </p>";
+                }
+            }                
+            
 
+            ?>
+            </div>
+						
 			<table class="table table-bordered table-striped">
 			<thead>
             <tr>
@@ -273,6 +303,8 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 				while ($booking_arr = mysqli_fetch_assoc($res_booking_arr)) {
 					echo "<tr>";
 					echo "<td>";
+					$day = date("w",strtotime($booking_arr['date']));
+					echo "<span style='font-weight:bold'>" . int_to_tag($day) . " </span>";
 					echo $booking_arr['date'];
 					echo "</td>";
 					echo "<td>";
@@ -317,8 +349,34 @@ if ($isPermitted or $user_arr['isAdmin'] == '1') {
 				
 				?>
 			</table>
-		
-		
+			<?php 
+			$sql = "SELECT * FROM new_permissions WHERE userid= '".$user_arr['id']."'";
+			if (!$res_permission_arr = mysqli_query($db, $sql)) {
+				echo "<p> error".$errormsg."</p>";
+			}
+			$isPermitted = 0 ;
+			while($res_permission = mysqli_fetch_assoc($res_permission_arr)) {
+				if ($res_permission['instrumentid'] == $instrumentid) {
+					$isPermitted = True;
+					break ;
+				}
+			}
+			if (!isset($instrumentid)) {
+				echo "<div>Instrument wurde nicht gefunden</div>";
+			}
+			if (isset($instrumentid) and ($isPermitted or $user_arr['isAdmin'] == '1')) {
+				echo "
+					<form action='newBooking.php' method='get'>
+						<input type='hidden' name='instname' value='".$instname."'>
+						<input type='submit' class='btn btn-block btn-info' value='Neue Buchung'>
+					</form>
+				
+				";
+			} else {
+				echo "Sie haben keine Berechtigung dieses instrument zu Buchen";
+			}
+			?>
+
 		</div>
 		<div class="col-md-2"></div>
 		</div>

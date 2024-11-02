@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -8,7 +6,7 @@ if(!isset($userid)){
 	header("Location: login.php");
 	exit;
 } else {
-	// holt sich die daten über den Benutzer (TODO: vielleicht in funktion schreiben)
+	// holt sich die daten �ber den Benutzer (TODO: vielleicht in funktion schreiben)
 	require "DB/connect.inc.php";
 	$sql="SELECT id, name, nds, isAdmin, email FROM new_users WHERE id='".$userid."';";
 	$resultname=mysqli_query($db,$sql);
@@ -18,23 +16,6 @@ if(!isset($userid)){
 if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
-if ($_POST['einverstanden'] == 'Ich bin mir sicher!' && $_POST['Puserid'] != '') {
-	$sql = "DELETE FROM new_bookings WHERE bookedbyid='".$_POST['Puserid']."';";
-	mysqli_query($db, $sql);
-	$sql = "DELTE FROM new_supervisors WHERE userid='".$_POST['Puserid']."';";
-	mysqli_query($db, $sql);
-	$sql = "DELETE FROM new_users WHERE id='".$_POST['Puserid']."';";
-	if (mysqli_query($db, $sql)) {
-		header("Location: deleteuser.php?msg=success");
-		return;
-	} else {
-		header("Location: welcome_bumble.php?msg=errormsg");
-		return;
-	}
-
-
-
-} 
 ?>
 
 <html>
@@ -51,11 +32,12 @@ if ($_POST['einverstanden'] == 'Ich bin mir sicher!' && $_POST['Puserid'] != '')
 				<ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
                     <li class="breadcrumb-item"><a href="adminpage.php">Adminseite</a></li>
-                    <li class="breadcrumb-item"><a href="manageusers.php">Benutzerverwaltung</a></li>
-                    <li class="breadcrumb-item active">Benutzerlöschung</li>
+                    <li class="breadcrumb-item"><a href="manageinstruments.php">Instrumentverwaltung</a></li>
+					<li class="breadcrumb-item active">L&oumlschbest&aumltigung f&uumlr Betreuer</li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
+            
 		</nav>
 		
 		<div class="containter">
@@ -64,28 +46,19 @@ if ($_POST['einverstanden'] == 'Ich bin mir sicher!' && $_POST['Puserid'] != '')
 		<div class="col-md-8">
 <!-- -->
 		
-		<h1 class='page-header'>Löschbestätigung für Benutzerlöschung</h1>
-		
+		<h1 class='page-header'>L&oumlschbest&aumltigung f&uumlr Betreuer</h1>
 		<?php 
-		if ($_POST['deletebutton'] == 'delete User') {
-			echo "
-			<div class='text-warning'>Wollen sie den User wirklich löschen?</div>
-			<form action='#' method='post'>
-				<input type='hidden' name='Puserid' value='".$_POST['Puserid']."'> 
-				<input type='submit' class='btn btn-block btn-success' name='einverstanden' value='Ich bin mir sicher!'>
-			</form>";
+		if ($_POST['bdeletesupervisor'] != '') {
+			$sql = "DELETE FROM new_supervisors
+				WHERE instrumentid='".htmlspecialchars($_POST['hinstid'])."' 
+				AND userid='".htmlspecialchars($_POST['huid'])."';";
+			if(mysqli_query($db, $sql)) {
+				echo "<div class='text-success'>Betreuer erfolgreich entfernt</div>";
+			} else {
+				echo "<div class='text-danger'>irgendwas doofes ist passiert</div>";
+			}
 		}
-		
-		if ($_GET['msg'] == 'success') {
-			echo "<div class='text-success'>User gelöscht!</div>";
-		}
-			
 		?>
-		<form action="manageusers.php">
-			<input type="submit" class='btn btn-block btn-default' value="zurück zur Benutzerverwaltung">
-		</form>
-
-
 <!-- -->
 		
 		</div>

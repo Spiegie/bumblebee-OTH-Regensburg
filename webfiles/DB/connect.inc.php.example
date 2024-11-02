@@ -1,0 +1,7 @@
+<?php
+$db = @mysqli_connect("db-host","db-name","username","database","port");
+if ($db -> connect_errno) {
+  echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+  exit();
+}
+?>

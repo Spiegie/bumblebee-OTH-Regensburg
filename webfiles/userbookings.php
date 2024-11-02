@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -42,8 +41,8 @@ function int_to_tag ($day) {
 	}
 }
 
-?>
 
+?>
 
 <html>
 	<head>
@@ -57,45 +56,50 @@ function int_to_tag ($day) {
 		<nav class="navbar navbar-default"> 
 			<div class="pull-left" style="padding:5px">Sie sind eingeloggt als <span style='color:green'><?php echo $username ?></span> </br>
 				<ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
-                    <li class="breadcrumb-item">Buchungsübersicht</li>
+					<li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
+					<li class="breadcrumb-item"><a href="userpage.php">Benutzerseite</a></li>
+                    <li class="breadcrumb-item active">Benutzerbuchungen</li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
 		</nav>
-        
+		
 		<div class="containter">
 		<div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
-        
-        <!--make headline-->
-			<h1 class='page-header'> Buchungsübersicht </h1>
-        
+
+
+<h1 class='page-header'>Ihre Buchungen</h3>
+
+
 	<div class="col-md-6">
 		<h4>Zeitraum filtern:</h4>
 		<table class="table">
 		<tr>
-		<?php echo "<form action='bookings_overview.php' method='post'>"; ?>
+		<?php echo "<form action='userbookings.php' method='post'>"; ?>
 		<td>von: <input class='form-control' type='date' name='dvon' value='<?php echo $_POST['dvon']; ?>'></td>
 		<td>bis: <input class='form-control' type='date' name='dbis' value='<?php echo $_POST['dbis']; ?>'></td>
 		<td> <input class='btn btn-default' type='submit' value='filtern' name='bfiltern'> </td>
 		</form>
 		<td>
-			<form action='userbookings.php' method='post'>
-				<input class="btn btn-info" type="submit" value='nur eigene Buchungen anzeigen'  name='beigene Buchungen'>
-			</form>
+			<form action='bookings_overview.php' method='post'>
+				<input class="btn btn-info" type="submit" value='alle Buchungen anzeigen'  name='beigene Buchungen'>
+			</form>	
+
 		</td>
 		</tr>
 		</table>
 	</div>	
 
+
+
+
+
 <!-- -->
-            
-            
-			
-            <?php
-			//print errormsg to user
+
+<?php
+			//print errormsg to user, Process Filter
             
             if ($_POST['bfiltern'] == '') {
 				$sql = "SELECT 
@@ -206,50 +210,84 @@ function int_to_tag ($day) {
 			
 			
 			?>
-			
-			<table class="table table-bordered table-striped">
-			<tr>
-				<td><span style='font-weight:bold'>Instrument</span></td>
-				<td><span style='font-weight:bold'>Gebucht am</span></td>
-				<td><span style='font-weight:bold'>Gebucht von</span></td>
-				<td><span style='font-weight:bold'>Gebucht bis</span></td>
-				<td><span style='font-weight:bold'>Benutzer</span></td>
-				<td><span style='font-weight:bold'>Kommentar</span></td>
-			</tr>
-				<?php
-				while ($booking_arr = mysqli_fetch_array($res_booking_arr)) {
-					echo "<tr>";
-					echo "<td>";
-					echo $booking_arr['iname'];
-					echo "</td>";
-					echo "<td>";
-					$day = date("w",strtotime($booking_arr['date']));
-					echo "<span style='font-weight:bold'>" . int_to_tag($day) . " </span>";
-					echo $booking_arr['date'];
-					echo "</td>";
-					echo "<td>";
-					echo $booking_arr['startTime'];
-					echo "</td>";
-					echo "<td>";
-					echo $booking_arr['endTime'];
-					echo "</td>";
-					echo "<td>";
-					echo $booking_arr['uname'];
-					echo "</td>";
-					echo "<td>";
-					echo $booking_arr['comments'];
-					echo "</td>";
-					echo "</tr>";
-					
-				}
-				
-				?>
-			</table>
 
+
+
+
+
+
+
+<?php
+$sql = "SELECT * 
+	FROM new_instruments i
+JOIN new_bookings b ON i.id = b.instruments
+WHERE b.bookedbyid='".$user_arr['id']."' AND b.date >= CURDATE()
+ORDER BY b.date ASC, b.startTime ASC;";
+			if (!$res_mybookings_arr = mysqli_query($db, $sql)) {
+				$errormsg = "irgendwas doofes ist passiert";
+				echo "<p>".$errormsg."</p>";
+			}
+?>
+<table class="table table-bordered table-striped">
+<thead>
+<tr>
+	<th>Instrument</th>
+	<th>Geburcht am (YYYY-MM-TT)</th>
+	<th>Gebucht von</th>
+	<th>Gebucht bis</th>
+	<th>Kommentar</th>
+</tr>
+</thead>
+<tbody>
+<?php
+			while ($res_mybookings = mysqli_fetch_assoc($res_mybookings_arr)) {
+				echo "<tr>";
+				echo "<td>";
+				echo $res_mybookings['name'];
+				echo "</td>";
+				echo "<td>";
+				$day = date("w",strtotime($booking_arr['date']));
+				echo "<span style='font-weight:bold'>" . int_to_tag($day) . " </span>";
+				echo $res_mybookings['bookwhen'];
+				echo "</td>";
+				echo "<td>";
+				echo $res_mybookings['startTime'];
+				echo "</td>";
+				echo "<td>";
+				echo $res_mybookings['endTime'];
+				echo "</td>";
+				echo "<td>";
+				echo $res_mybookings['comments'];
+				echo "</td>";
+				echo "<td>";
+				echo "
+							<form action='deletebooking.php?instname=".$res_mybookings['name']."' method='post'>
+								<input type='hidden' name='bookingid' value='".$res_mybookings['id']."'> 
+								<input type='hidden' name='bookindate' value='".$res_mybookings['date']."'> 
+								<input type='hidden' name='bookingstartTime' value='".$res_mybookings['startTime']."'> 
+								<input type='hidden' name='bookingendTime' value='".$res_mybookings['endTime']."'> 
+								<center><input type='submit' class='btn btn-danger'  name='deletebutton' ' value='delete'></center>
+							</form>";
+				echo "</td>";
+
+				echo "</tr>";
+
+			}
+
+?>
+
+</tbody>
+</table>
+
+<?php
+?>	
+
+
+
+
+<!-- -->
 		</div>
-		<div class="col-md-2"></div>
 		</div>
 		</div>
-	</center> </body>
-	
+	</center></body>
 </html>

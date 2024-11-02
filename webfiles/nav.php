@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-default"> 
 	<div class="pull-left" style="padding:5px"> Sie sind eingeloggt als <span style='color:green'><?php echo $username ?></span> </div>
 	<div class="pull-left" style="padding:5px"> <a href="welcome_bumble.php"> HOME </a> </div>

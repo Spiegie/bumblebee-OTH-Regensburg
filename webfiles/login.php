@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 //logout:
@@ -7,24 +6,26 @@ session_unset();
 require "DB/connect.inc.php";
 //password, user und login in variablen ablegen:
 
-while(list($name,$value)=each($_POST)){
-	$$name=htmlspecialchars($value);
+foreach($_POST as $name => $value) {
+    $$name=htmlspecialchars($value);
 }
-if($login){//zum vergleich hashen
-	$hash=sha1($pwd);
-	//überprüfung ob die daten gültig sind:
-	$sql="SELECT id, suspended FROM new_users WHERE passwd='".$hash."' AND nds='".$user."';";
-	$result=mysqli_query($db,$sql);
-	if($row=mysqli_fetch_assoc($result)){//login erfolgreich
-		if ($row['suspended'] == 1) {
-			$message="Dieser User ist deaktiviert. Bitte wenden Sie sich an einen Administrator";
-		} else {
-			$_SESSION['userid']=$row['id'];
-			header("Location: welcome_bumble.php");
-		}
-	}else{//login falsch
-		$message="Benutzername oder Passwort falsch.";
-	}
+if (isset($login)) {
+    if($login){//zum vergleich hashen
+        $hash=sha1($pwd);
+        //überprüfung ob die daten gültig sind:
+        $sql="SELECT id, suspended FROM new_users WHERE passwd='".$hash."' AND nds='".$user."';";
+        $result=mysqli_query($db,$sql);
+        if($row=mysqli_fetch_assoc($result)){//login erfolgreich
+            if ($row['suspended'] == 1) {
+                $message="Dieser User ist deaktiviert. Bitte wenden Sie sich an einen Administrator";
+            } else {
+                $_SESSION['userid']=$row['id'];
+                header("Location: welcome_bumble.php");
+            }
+        }else{//login falsch
+            $message="Benutzername oder Passwort falsch.";
+        }
+    }
 }
 
 
@@ -106,11 +107,11 @@ if($login){//zum vergleich hashen
 <!-- INOFBLOCK  -->
 		<h1>Login</h1>
 		<form action=<?php echo $_SERVER['PHP_SELF'];?> method='post'>
-		<?php echo $message;?>
+            <?php if (isset($message)) {echo $message;}?>
 		<table>
 		<tr>
 			<td align="right">NDS-Kennung:</td>
-			<td><input type="text" name="user" value="<?php echo $user;?>"></td>
+			<td><input type="text" name="user" value="<?php if (isset($user)) {echo $user;}?>"></td>
 		</tr>
 		<tr>
 			<td align="right">Passwort:</td>

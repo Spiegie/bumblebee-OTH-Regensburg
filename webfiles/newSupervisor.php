@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -8,7 +6,7 @@ if(!isset($userid)){
 	header("Location: login.php");
 	exit;
 } else {
-	// holt sich die daten über den Benutzer (TODO: vielleicht in funktion schreiben)
+	// holt sich die daten ï¿½ber den Benutzer (TODO: vielleicht in funktion schreiben)
 	require "DB/connect.inc.php";
 	$sql="SELECT id, name, nds, isAdmin, email FROM new_users WHERE id='".$userid."';";
 	$resultname=mysqli_query($db,$sql);
@@ -74,7 +72,7 @@ if($user_arr['isAdmin'] != '1') {
 				echo "<div class='text-danger'>Supervisor f&uumlr dieses Ger&aumlt bereits zugewiesen</div>";
 			} 
 			if ($_GET['msg'] == '') {
-				echo "<div class='text-danger'>bitte eine NDS-kennung auswählen</div>";
+				echo "<div class='text-danger'>bitte eine NDS-kennung auswï¿½hlen</div>";
 			}
 		}
 		?>

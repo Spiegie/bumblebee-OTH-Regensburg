@@ -1,3 +1,6 @@
 /DB/
 /pdf/
 Telefonliste.pdf
+/infrastructure/data/
+/webfiles/DB/connect.inc.php
+/infrastructure/docker-compose.yaml

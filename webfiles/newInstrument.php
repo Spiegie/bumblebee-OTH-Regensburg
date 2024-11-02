@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -49,7 +47,7 @@ if($user_arr['isAdmin'] != '1') {
 
 		<?php
 		if(!empty($_POST)) {
-			while(list($name,$value)=each($_POST)){
+            foreach($_POST as $name => $value) {
 				$$name=htmlspecialchars($value);
 			}
 			$supervisorerror = 0;

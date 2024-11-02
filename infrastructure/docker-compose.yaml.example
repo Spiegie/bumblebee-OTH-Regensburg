@@ -1,0 +1,39 @@
+version: '3.8'
+services:
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+      MARIADB_USER: bumblebee
+      MARIADB_PASSWORD: testing
+      MARIADB_DATABASE: bumblebee
+    volumes: 
+      - ./data:/var/lib/mysql:Z 
+    ports:
+      - '8085:3306'
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8084:8080
+
+  nginx:
+    build: ./nginx/
+    ports: 
+      - 8080:80
+    volumes:
+      - ../webfiles/:/var/www/html/
+
+  php:
+    build: ./php/
+    expose:
+      - 9000
+    volumes:
+      - ../webfiles/:/var/www/html/
+
+volumes:
+  db:
+    driver: local

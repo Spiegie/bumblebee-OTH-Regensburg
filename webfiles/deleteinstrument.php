@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -17,9 +16,18 @@ if(!isset($userid)){
 if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
+if ($_POST['erinverstanden'] == 'Ich bin mir sicher!' && $_POST['Pinstid'] != '') {
+	echo "<p>hi</p>";
+	$sql = "DELETE FROM new_instruments WHERE id='".$_POST['Pinstid']."';";
+	if (mysqli_query($db, $sql)) {
+		header("Location: deleteinstrument.php?msg=success");
+		return;
+	} else {
+		header("Location: welcome_bumble.php?msg=errormsg");
+		return;
+	}
+}
 ?>
-
-
 
 <html>
 	<head>
@@ -34,35 +42,42 @@ if($user_arr['isAdmin'] != '1') {
 			<div class="pull-left" style="padding:5px">Sie sind eingeloggt als <span style='color:green'><?php echo $username ?></span> </br>
 				<ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
-                    <li class="breadcrumb-item active">Adminseite</li>
+                    <li class="breadcrumb-item"><a href="adminpage.php">Adminseite</a></li>
+                    <li class="breadcrumb-item"><a href="manageinstruments.php">Instrumentenverwaltung</a></li>
+                    <li class="breadcrumb-item active">Instrumentlöschung</li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
 		</nav>
-		
-		
 		
 		<div class="containter">
 		<div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
 <!-- -->
-		<h1 class='page-header'>Adminseite</h1>
 		
-		<table class='table table-bordered'>
-			<tr>
-				<td><center><a href='manageusers.php'>Benutzerverwaltung</a></center></td>
-				<td><center><a href='newUser.php'>neuen Benutzer anlegen</a></center></td>
-			</tr>
-			<tr>
-				<td><center><a href='manageinstruments.php'>Instrumentenverwaltung</a></center></td>
-				<td><center><a href='newInstrument.php'>neues Instrument anlegen</a></center></td>
-			</tr>
-			<tr>
-				<td><center><a href='managebookings.php'>Buchungsverwaltung</a></td>
-				<td><center><a href='telefonliste.php'>Telefonliste</a></td>
-			</tr>
-		</table>
+		<h1 class='page-header'>Löschbestätigung für Instrumentlöschung</h1>
+		
+		<?php 
+		if ($_POST['deletebutton'] == 'delete') {
+			echo "
+			<div class='text-warning'>Wollen sie das Instrument wirklich löschen?</div>
+			<form action='#' method='post'>
+				<input type='hidden' name='Pinstid' value='".$_POST['Pinstid']."'> 
+				<input type='submit' class='btn btn-block btn-success' name='erinverstanden' value='Ich bin mir sicher!'>
+			</form>";
+		}
+		
+		if ($_GET['msg'] == 'success') {
+			echo "<div class='text-success'>Instrument gelöscht!</div>";
+		}
+			
+?>
+
+		<form action="manageinstruments.php">
+			<input type="submit" class='btn btn-block btn-default' value="zurück zur Instrumentenverwaltung">
+		</form>
+
 <!-- -->
 		
 		</div>

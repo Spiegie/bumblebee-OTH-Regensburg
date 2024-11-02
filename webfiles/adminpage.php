@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -8,7 +6,7 @@ if(!isset($userid)){
 	header("Location: login.php");
 	exit;
 } else {
-	// holt sich die daten über den Benutzer (TODO: vielleicht in funktion schreiben)
+	// holt sich die daten Ã¼ber den Benutzer (TODO: vielleicht in funktion schreiben)
 	require "DB/connect.inc.php";
 	$sql="SELECT id, name, nds, isAdmin, email FROM new_users WHERE id='".$userid."';";
 	$resultname=mysqli_query($db,$sql);
@@ -19,6 +17,8 @@ if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
 ?>
+
+
 
 <html>
 	<head>
@@ -33,34 +33,35 @@ if($user_arr['isAdmin'] != '1') {
 			<div class="pull-left" style="padding:5px">Sie sind eingeloggt als <span style='color:green'><?php echo $username ?></span> </br>
 				<ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
-                    <li class="breadcrumb-item"><a href="adminpage.php">Adminseite</a></li>
-                    <li class="breadcrumb-item"><a href="manageinstruments.php">Instrumentverwaltung</a></li>
-					<li class="breadcrumb-item active">L&oumlschbest&aumltigung f&uumlr Betreuer</li>
+                    <li class="breadcrumb-item active">Adminseite</li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
-            
 		</nav>
+		
+		
 		
 		<div class="containter">
 		<div class="row">
 		<div class="col-md-2"></div>
 		<div class="col-md-8">
 <!-- -->
+		<h1 class='page-header'>Adminseite</h1>
 		
-		<h1 class='page-header'>L&oumlschbest&aumltigung f&uumlr Betreuer</h1>
-		<?php 
-		if ($_POST['bdeletesupervisor'] != '') {
-			$sql = "DELETE FROM new_supervisors
-				WHERE instrumentid='".htmlspecialchars($_POST['hinstid'])."' 
-				AND userid='".htmlspecialchars($_POST['huid'])."';";
-			if(mysqli_query($db, $sql)) {
-				echo "<div class='text-success'>Betreuer erfolgreich entfernt</div>";
-			} else {
-				echo "<div class='text-danger'>irgendwas doofes ist passiert</div>";
-			}
-		}
-		?>
+		<table class='table table-bordered'>
+			<tr>
+				<td><center><a href='manageusers.php'>Benutzerverwaltung</a></center></td>
+				<td><center><a href='newUser.php'>neuen Benutzer anlegen</a></center></td>
+			</tr>
+			<tr>
+				<td><center><a href='manageinstruments.php'>Instrumentenverwaltung</a></center></td>
+				<td><center><a href='newInstrument.php'>neues Instrument anlegen</a></center></td>
+			</tr>
+			<tr>
+				<td><center><a href='managebookings.php'>Buchungsverwaltung</a></td>
+				<td><center><a href='telefonliste.php'>Telefonliste</a></td>
+			</tr>
+		</table>
 <!-- -->
 		
 		</div>

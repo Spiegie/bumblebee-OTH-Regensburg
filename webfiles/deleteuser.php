@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 $userid=$_SESSION['userid'];
@@ -17,17 +16,23 @@ if(!isset($userid)){
 if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
-if ($_POST['erinverstanden'] == 'Ich bin mir sicher!' && $_POST['Pinstid'] != '') {
-	echo "<p>hi</p>";
-	$sql = "DELETE FROM new_instruments WHERE id='".$_POST['Pinstid']."';";
+if ($_POST['einverstanden'] == 'Ich bin mir sicher!' && $_POST['Puserid'] != '') {
+	$sql = "DELETE FROM new_bookings WHERE bookedbyid='".$_POST['Puserid']."';";
+	mysqli_query($db, $sql);
+	$sql = "DELTE FROM new_supervisors WHERE userid='".$_POST['Puserid']."';";
+	mysqli_query($db, $sql);
+	$sql = "DELETE FROM new_users WHERE id='".$_POST['Puserid']."';";
 	if (mysqli_query($db, $sql)) {
-		header("Location: deleteinstrument.php?msg=success");
+		header("Location: deleteuser.php?msg=success");
 		return;
 	} else {
 		header("Location: welcome_bumble.php?msg=errormsg");
 		return;
 	}
-}
+
+
+
+} 
 ?>
 
 <html>
@@ -44,8 +49,8 @@ if ($_POST['erinverstanden'] == 'Ich bin mir sicher!' && $_POST['Pinstid'] != ''
 				<ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="welcome_bumble.php">Startseite</a></li>
                     <li class="breadcrumb-item"><a href="adminpage.php">Adminseite</a></li>
-                    <li class="breadcrumb-item"><a href="manageinstruments.php">Instrumentenverwaltung</a></li>
-                    <li class="breadcrumb-item active">Instrumentlöschung</li>
+                    <li class="breadcrumb-item"><a href="manageusers.php">Benutzerverwaltung</a></li>
+                    <li class="breadcrumb-item active">Benutzerlöschung</li>
 				</ol>
             </div>
 			<a href="login.php" class="pull-right" style="padding:10px;background:lightgrey;font-size: large">LOGOUT</a>
@@ -57,27 +62,27 @@ if ($_POST['erinverstanden'] == 'Ich bin mir sicher!' && $_POST['Pinstid'] != ''
 		<div class="col-md-8">
 <!-- -->
 		
-		<h1 class='page-header'>Löschbestätigung für Instrumentlöschung</h1>
+		<h1 class='page-header'>Löschbestätigung für Benutzerlöschung</h1>
 		
 		<?php 
-		if ($_POST['deletebutton'] == 'delete') {
+		if ($_POST['deletebutton'] == 'delete User') {
 			echo "
-			<div class='text-warning'>Wollen sie das Instrument wirklich löschen?</div>
+			<div class='text-warning'>Wollen sie den User wirklich löschen?</div>
 			<form action='#' method='post'>
-				<input type='hidden' name='Pinstid' value='".$_POST['Pinstid']."'> 
-				<input type='submit' class='btn btn-block btn-success' name='erinverstanden' value='Ich bin mir sicher!'>
+				<input type='hidden' name='Puserid' value='".$_POST['Puserid']."'> 
+				<input type='submit' class='btn btn-block btn-success' name='einverstanden' value='Ich bin mir sicher!'>
 			</form>";
 		}
 		
 		if ($_GET['msg'] == 'success') {
-			echo "<div class='text-success'>Instrument gelöscht!</div>";
+			echo "<div class='text-success'>User gelöscht!</div>";
 		}
 			
-?>
-
-		<form action="manageinstruments.php">
-			<input type="submit" class='btn btn-block btn-default' value="zurück zur Instrumentenverwaltung">
+		?>
+		<form action="manageusers.php">
+			<input type="submit" class='btn btn-block btn-default' value="zurück zur Benutzerverwaltung">
 		</form>
+
 
 <!-- -->
 		
