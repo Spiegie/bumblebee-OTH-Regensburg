@@ -113,7 +113,6 @@ function state_to_color($state) {
             <thead>
 			<tr>
 				<th>Instrument</th>
-				<th>Status</th>
 				<th>Betreuer</th>
 			</tr>
             </thead>
@@ -135,9 +134,6 @@ function state_to_color($state) {
 					<input type='hidden' name='instname' value='".$instruments_arr['name']."'>
 					<input type='submit' class='btn  btn-info btn-block' value='".$instruments_arr['name']."'>
 				</form>
-				</td>
-				<td style='width=25%'>
-					<div style='font-weight:bold' class=".state_to_color($instruments_arr['state']).">".$instruments_arr['status']."</div>
 				</td>
 				<td style='width:25%'>
 					<span>";
@@ -165,7 +161,6 @@ function state_to_color($state) {
             <thead>
 			<tr>
 				<th>Instrument</th>
-				<th>Status</th>
 				<th>Betreuer</th>
 			</tr>
             </thead>
@@ -190,9 +185,6 @@ function state_to_color($state) {
 					<input type='hidden' name='instname' value='".$instruments_arr['name']."'>
 					<input type='submit' class='btn  btn-info btn-block' value='".$instruments_arr['name']."'>
 				</form>
-				</td>
-				<td style='width:25%'>
-					<div style='font-weight:bold' class=".state_to_color($instruments_arr['state']).">".$instruments_arr['status']."</div>
 				</td>
 				<td style='width:25%'>
 					<span>";

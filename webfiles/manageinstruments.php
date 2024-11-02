@@ -17,16 +17,6 @@ if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
 
-if ($_POST['bStatus'] != '') {
-	$text = htmlspecialchars($_POST['statustext']);
-	$stateselect = htmlspecialchars($_POST['stateselect']);
-    $sql = "UPDATE new_instruments 
-			SET status = '".$text."',
-				state = '".$stateselect."'
-            WHERE id ='".$_POST['hID']."';";
-    mysqli_query($db, $sql);
-}
-
 function get_selected_state($dbvar, $number) {
 	if ($dbvar == $number) {
 		return "selected";
@@ -99,9 +89,6 @@ function get_selected_state($dbvar, $number) {
                     <form action='manageinstruments.php ' method='post'>
                     <table class='table table-bordered '>
                         <tr>
-                        <td>
-                            <textarea name='statustext'>".$instruments_arr['status']."</textarea>
-                        </td>
 						<td>
 							<select name='stateselect' class='form-control' style='font-weight:bold'>
 								<option ".get_selected_state($instruments_arr['state'], 0)." value='0' class='text-default' style='font-weight:bold'>Default</option>
@@ -111,7 +98,6 @@ function get_selected_state($dbvar, $number) {
 							</select> 
 
                             <input type='hidden' name='hID' value='".$instruments_arr['id']."'>
-                            <input type='submit' name='bStatus' value='Status ändern' class='btn btn-default'>
                         </td>
                         </tr>
                     </table>
