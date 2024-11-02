@@ -210,7 +210,6 @@ if ($users_arr = mysqli_fetch_assoc($res_newusers)) {
 				EXCEPT
 				SELECT p.instrumentid FROM new_permissions p WHERE p.userid = '".$users_arr['id']."') x ON i.id = x.id ORDER BY i.name";
 $inst_arr = mysqli_query($db, $sql);
-echo "<p>".mysqli_error()."</p>";
 while ($inst = mysqli_fetch_assoc($inst_arr)) {
 	echo "<option value='".$inst['id']."'>".$inst['name']."</option>";
 } 
