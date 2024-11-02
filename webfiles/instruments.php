@@ -14,15 +14,6 @@ if(!isset($userid)){
 	$username=$user_arr['name'];
 }
 
-if ($_POST['bStatus'] != '') {
-	$text = htmlspecialchars($_POST['statustext']);
-	$stateselect = htmlspecialchars($_POST['stateselect']);
-    $sql = "UPDATE new_instruments 
-			SET status = '".$text."',
-				state = '".$stateselect."'
-            WHERE id ='".$_POST['hID']."';";
-    mysqli_query($db, $sql);
-}
 
 
 function int_to_tag ($day) {
@@ -53,23 +44,6 @@ function int_to_tag ($day) {
 function get_selected_state($dbvar, $number) {
 	if ($dbvar == $number) {
 		return "selected";
-	}
-}
-
-function state_to_color($state) {
-	switch($state) {
-	case "0":
-		return "text-info";
-		break;
-	case "1":
-		return "text-success";
-		break;
-	case "2":
-		return "text-warning";
-		break;
-	case "3";
-		return "text-danger";
-		break;
 	}
 }
 
@@ -239,7 +213,6 @@ function state_to_color($state) {
             <div class="col-md-4">
             </div>
             <div class="col-md-4">
-			<h4>Status: </h4>
             <?php 
             
 
