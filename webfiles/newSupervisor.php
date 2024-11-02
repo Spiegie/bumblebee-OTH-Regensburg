@@ -17,7 +17,6 @@ if($user_arr['isAdmin'] != '1') {
 	header("Location: welcome_bumble.php?errormsg=nopermission");
 }
 ?>
-
 <html>
 	<head>
 		<title> BumBee </title>
@@ -58,23 +57,13 @@ if($user_arr['isAdmin'] != '1') {
 			$sql = "INSERT INTO new_supervisors (instrumentid, userid)
 				VALUES ('".$_POST['hinstid']."','".$row['id']."');";
 			if (mysqli_query($db, $sql)) {
-				header("Location: newSupervisor.php?msg=success");
+				echo "<div class='text-success'>Betreuer erfolgreich angelegt</div>";
 				return;
 			} else {
-				header("Location: newSupervisor.php?msg=error");
+				echo "<div class='text-danger'>Supervisor f&uumlr dieses Ger&aumlt bereits zugewiesen</div>";
 				return;
 			}
-		} else {
-			if ($_GET['msg'] == 'success') {
-				echo "<div class='text-success'>Betreuer erfolgreich angelegt</div>";
-			}
-			if ($_GET['msg'] == 'error') {
-				echo "<div class='text-danger'>Supervisor f&uumlr dieses Ger&aumlt bereits zugewiesen</div>";
-			} 
-			if ($_GET['msg'] == '') {
-				echo "<div class='text-danger'>bitte eine NDS-kennung ausw�hlen</div>";
-			}
-		}
+		} 
 		?>
 
 <!-- -->

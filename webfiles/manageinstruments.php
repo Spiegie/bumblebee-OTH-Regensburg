@@ -63,7 +63,6 @@ function get_selected_state($dbvar, $number) {
 		<tr>
 			<th> id </th>
             <th> Name </th>
-            <th> Staus </th>
 			<th> Betreuer (hinzufügen mit NDS-Kennung)<!-- TODO: implement --> </th>
 			<th>  </th>
 		</tr>
@@ -85,24 +84,6 @@ function get_selected_state($dbvar, $number) {
 				<td>
 					<p>".$instruments_arr['name']."</p>
 				</td>
-                <td>
-                    <form action='manageinstruments.php ' method='post'>
-                    <table class='table table-bordered '>
-                        <tr>
-						<td>
-							<select name='stateselect' class='form-control' style='font-weight:bold'>
-								<option ".get_selected_state($instruments_arr['state'], 0)." value='0' class='text-default' style='font-weight:bold'>Default</option>
-								<option ".get_selected_state($instruments_arr['state'], 1)." value='1' class='text-success' style='font-weight:bold'>OK</option>
-								<option ".get_selected_state($instruments_arr['state'], 2)." value='2' class='text-warning' style='font-weight:bold'>Danger</option>
-								<option ".get_selected_state($instruments_arr['state'], 3)." value='3' class='text-danger' style='font-weight:bold'>Error</option>
-							</select> 
-
-                            <input type='hidden' name='hID' value='".$instruments_arr['id']."'>
-                        </td>
-                        </tr>
-                    </table>
-                    </form>
-                </td>
 				<td>
 					<span>";
 					$sql = "SELECT 
