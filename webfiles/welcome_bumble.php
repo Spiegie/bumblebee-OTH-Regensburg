@@ -1,9 +1,8 @@
 <?php
 session_start();
-$userid=$_SESSION['userid'];
-if(!isset($userid)){
-	// falls Benutzer noch nicht angemeldet ist, wird er auf die Loginseite geleitet.
+if(!isset($_SESSION['userid'])){
 	header("Location: login.php");
+	$userid=$_SESSION['userid'];
 	exit;
 } else {
 	// holt sich die daten über den Benutzer (TODO: vielleicht in funktion schreiben)
@@ -21,9 +20,7 @@ if ($user_arr['isAdmin']=='1') {
 		$_SESSION['adminmode'] = '0';
 	}
 }
-
 function state_to_color($state) {
-
 	switch($state) {
 	case "0":
 		return "text-info";
@@ -38,12 +35,8 @@ function state_to_color($state) {
 		return "text-danger";
 		break;
 	}
-
-
 }
-
 ?>
-
 <html>
 	<head>
 		<title> BumBee </title>
