@@ -11,8 +11,6 @@ services:
       MARIADB_DATABASE: bumblebee
     volumes: 
       - ./data:/var/lib/mysql:Z 
-    ports:
-      - '8085:3306'
 
   adminer:
     image: adminer
